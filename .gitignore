@@ -1,0 +1,12 @@
+.gradle
+build
+out
+.gradletasknamecache
+*.iml
+*.ipr
+*.iws
+.idea
+README.html
+.classpath
+.project
+.settings

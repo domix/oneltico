@@ -1,0 +1,209 @@
+/*
+ * Copyright (C) 2014-2015 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+buildscript {
+  repositories {
+    jcenter()
+  }
+
+  dependencies {
+    classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+    classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
+    classpath 'com.github.ben-manes:gradle-versions-plugin:0.11.3'
+  }
+}
+
+plugins {
+  id "com.github.hierynomus.license" version "0.11.0"
+  id 'net.researchgate.release' version '2.1.2'
+}
+
+ext {
+  javaVersion = '1.8'
+  spockVersion = '1.0-groovy-2.4'
+
+  groupId = 'com.domingosuarez'
+  artifactId = 'oneltico'
+  version = '0.1.0'
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'jacoco'
+apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.ben-manes.versions'
+
+repositories {
+  jcenter()
+}
+
+version = project.version
+group = project.group
+
+sourceCompatibility = project.javaVersion
+targetCompatibility = project.javaVersion
+
+Date buildTimeAndDate = new Date()
+ext {
+  buildDate = new java.text.SimpleDateFormat('dd-MMM-yyyy').format(buildTimeAndDate)
+  buildTime = new java.text.SimpleDateFormat('hh:mm aa').format(buildTimeAndDate)
+}
+
+dependencies {
+  compile 'javax.validation:validation-api:1.1.0.Final'
+}
+
+def jarManifestAttributes = [
+  'Built-By'  : System.properties['user.name'],
+  'Created-By': System.properties['java.version'] + ' (' + System.properties['java.vendor'] + ' ' + System.getProperty("java.vm.version") + ")",
+  'Build-Date': buildDate,
+  'Build-Time': buildTime]
+
+jar {
+  manifest {
+    attributes(jarManifestAttributes)
+  }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+
+def javaApiUrl = 'https://docs.oracle.com/javase/8/docs/api/'
+def groovyApiUrl = 'http://groovy.codehaus.org/gapi/'
+
+tasks.withType(Javadoc) {
+  options.links(javaApiUrl, groovyApiUrl)
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+  tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+  }
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+  classifier = 'javadoc'
+  from javadoc.destinationDir
+}
+
+artifacts {
+  archives sourcesJar, javadocJar
+}
+
+jacocoTestReport {
+  reports {
+    xml.enabled = true // coveralls plugin depends on xml format report
+    html.enabled = true
+  }
+}
+
+license {
+  header rootProject.file('HEADER_LICENSE')
+  strictCheck true
+}
+
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      from components.java
+      artifact sourcesJar
+      artifact javadocJar
+
+      pom.withXml {
+        def root = asNode()
+        root.appendNode('name', project.pomName)
+        root.appendNode('description', project.description)
+        root.appendNode('url', 'https://github.com/domix/oneltico')
+        root.appendNode('inceptionYear', '2015')
+        root.appendNode('packaging', 'jar')
+
+        def scm = root.appendNode('scm')
+        scm.appendNode('url', 'https://github.com/domix/oneltico')
+        scm.appendNode('connection', 'scm:https://domix@github.com/domix/oneltico.git')
+        scm.appendNode('developerConnection', 'scm:git@github.com:domix/oneltico.git')
+
+        def license = root.appendNode('licenses').appendNode('license')
+        license.appendNode('name', 'The Apache Software License, Version 2.0')
+        license.appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.txt')
+        license.appendNode('distribution', 'repo')
+
+        def developers = root.appendNode('developers')
+        def domix = developers.appendNode('developer')
+        domix.appendNode('id', 'domix')
+        domix.appendNode('name', 'Domingo Suarez Torres')
+        domix.appendNode('email', 'domingo.suarez@gmail.com')
+
+
+        root.dependencies.'*'.findAll() {
+          it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
+            dep.name == it.artifactId.text()
+          }
+        }.each() {
+          it.scope*.value = 'compile'
+        }
+      }
+    }
+  }
+}
+
+bintray {
+  user = project.hasProperty('bintrayUsername') ? bintrayUsername : ''
+  key = project.hasProperty('bintrayApiKey') ? bintrayApiKey : ''
+
+  publications = ['mavenJava']
+  dryRun = false //Whether to run this as dry-run, without deploying
+  publish = true //If version should be auto published after an upload
+  pkg {
+    repo = 'oss'
+    userOrg = 'domix'
+    name = project.name
+    desc = project.description
+    websiteUrl = 'https://github.com/domix/oneltico'
+    issueTrackerUrl = 'https://github.com/domix/oneltico/issues'
+    vcsUrl = 'https://github.com/domix/oneltico.git'
+    licenses = ['Apache-2.0']
+    labels = ['jpa', 'bean validation', 'jsr-303']
+    publicDownloadNumbers = true
+    attributes = [:]
+    //Optional version descriptor
+    version {
+      name = project.version
+      desc = project.description
+      gpg {
+        sign = project.hasProperty('bintrayGpgPassphrase')
+        passphrase = project.hasProperty('bintrayGpgPassphrase') ? bintrayGpgPassphrase : ''
+      }
+      mavenCentralSync {
+        sync = false
+        user = ''
+        password = ''
+        close = '1'
+      }
+    }
+  }
+}
+
+javadoc.options.links("https://docs.oracle.com/javase/8/docs/api/")
+
+classes.dependsOn licenseFormat
+createReleaseTag.dependsOn bintrayUpload
+
