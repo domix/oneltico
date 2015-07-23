@@ -1,4 +1,4 @@
-# neltiaya
+# oneltico
 JPA extras
 
-it was realized; it became true...
+it came to be verified, it came to become true
