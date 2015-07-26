@@ -35,6 +35,6 @@ class SmokeSpec extends Specification {
       def constraintViolations = validator.validate(domix)
       println constraintViolations
     then:
-      constraintViolations.size()
+      constraintViolations.size() == 34
   }
 }
