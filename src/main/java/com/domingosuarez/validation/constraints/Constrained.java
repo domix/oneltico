@@ -35,6 +35,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = ConstrainedValidator.class)
 @Documented
 public @interface Constrained {
+  String message() default "{oneltico.constraints.Constrained.message}";
+
   Class<?>[] groups() default {};
 
   Class<? extends Payload>[] payload() default {};

@@ -1,4 +1,4 @@
-/**
+/*
  *
  * Copyright (C) 2014-2015 the original author or authors.
  *
@@ -14,23 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.domingosuarez.validation.constraints;
+package com.domingosuarez.validation.constraints
 
-import lombok.Getter;
+import spock.lang.Specification
 
-import javax.validation.constraints.NotNull;
-import java.util.function.Predicate;
+import javax.validation.Validation
+import javax.validation.Validator
+import javax.validation.ValidatorFactory
 
 /**
- * Created by domix on 23/07/15.
+ * Created by domix on 26/07/15.
  */
-@Constrained
-public class Person {
-  @Getter
-  @NotNull
-  private String name;
+class SmokeSpec extends Specification {
+  def foo() {
+    setup:
+      ValidatorFactory factory = Validation.buildDefaultValidatorFactory()
+      Validator validator = factory.getValidator()
+    when:
+      Person domix = new Person()
+      def constraintViolations = validator.validate(domix)
+      println constraintViolations
+    then:
+      constraintViolations
 
-  @Constraint(property = "name", message = "El nombre no puede estar vacio.")
-  Predicate<Person> notEmptyName = (p) -> !p.getName().isEmpty();
-
+  }
 }
