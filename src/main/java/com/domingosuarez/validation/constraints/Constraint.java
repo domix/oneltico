@@ -16,45 +16,22 @@
  */
 package com.domingosuarez.validation.constraints;
 
-import javax.validation.Constraint;
-import javax.validation.Payload;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.util.function.Predicate;
 
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Created by domix on 23/07/15.
+ * Created by domix on 25/07/15.
  */
-@Target({METHOD, TYPE})
+@Target(FIELD)
 @Retention(RUNTIME)
-@Constraint(validatedBy = {})
 @Documented
-public @interface Logic {
-  String message() default "{validation.constraints.Logic.message}";
-
+public @interface Constraint {
   String property();
 
-  //Class<? extends Predicate<? extends Object>> condition();
+  String message() default "{oneltico.constraints.Rule.message}";
 
-  Class<?>[] groups() default {};
-
-  Class<? extends Payload>[] payload() default {};
-
-  /**
-   * Defines several {@link Logic} annotations on the same element.
-   *
-   * @see com.domingosuarez.validation.constraints.Logic
-   */
-  @Target({METHOD, TYPE})
-  @Retention(RUNTIME)
-  @Documented
-  @interface List {
-
-    Logic[] value();
-  }
 }

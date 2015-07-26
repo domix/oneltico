@@ -16,21 +16,26 @@
  */
 package com.domingosuarez.validation.constraints;
 
-import java.util.function.Predicate;
+import com.domingosuarez.validation.constraints.validators.ConstrainedValidator;
+
+import javax.validation.Constraint;
+import javax.validation.Payload;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Created by domix on 23/07/15.
  */
-@Constrained
-public class Person {
-  private String name;
+@Target(TYPE)
+@Retention(RUNTIME)
+@Constraint(validatedBy = ConstrainedValidator.class)
+@Documented
+public @interface Constrained {
+  Class<?>[] groups() default {};
 
-  @Constraint(property = "name", message = "El nombre no puede estar vacio.")
-  Predicate<Person> notEmptyName = (p) -> !p.getName().isEmpty();
-
-  public String getName() {
-    return name;
-  }
-
-
+  Class<? extends Payload>[] payload() default {};
 }

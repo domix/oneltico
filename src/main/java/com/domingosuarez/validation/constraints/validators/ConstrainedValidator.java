@@ -14,23 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.domingosuarez.validation.constraints;
+package com.domingosuarez.validation.constraints.validators;
 
-import java.util.function.Predicate;
+import com.domingosuarez.validation.constraints.Constrained;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 
 /**
- * Created by domix on 23/07/15.
+ * Created by domix on 25/07/15.
  */
-@Constrained
-public class Person {
-  private String name;
+public class ConstrainedValidator implements ConstraintValidator<Constrained, Object> {
 
-  @Constraint(property = "name", message = "El nombre no puede estar vacio.")
-  Predicate<Person> notEmptyName = (p) -> !p.getName().isEmpty();
-
-  public String getName() {
-    return name;
+  @Override
+  public void initialize(Constrained constraint) {
   }
 
+  @Override
+  public boolean isValid(Object value, ConstraintValidatorContext context) {
+    return true;
+  }
 
 }
