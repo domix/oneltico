@@ -40,6 +40,9 @@ ext {
   groupId = 'com.domingosuarez'
   artifactId = 'oneltico'
   version = '0.1.0'
+
+  pomName = 'oneltico'
+  description = 'Bean Validation extras'
 }
 
 apply plugin: 'java'
@@ -74,7 +77,6 @@ dependencies {
   compile "org.springframework:spring-core:${springVersion}"
 
   testCompile 'org.hibernate:hibernate-validator:5.2.0.Final'
-  //testCompile 'javax.el:javax.el-api:3.0.1-b04'
   testCompile 'org.glassfish.web:javax.el:2.2.6'
   testCompile "org.spockframework:spock-core:${spockVersion}"
   testCompile 'org.codehaus.groovy:groovy-all:2.4.4'
@@ -138,10 +140,18 @@ publishing {
       artifact sourcesJar
       artifact javadocJar
 
+      def lombok = it.pom.getRuntimeDependencies().find {
+        it.artifactId == 'lombok'
+      }
+
+      if (lombok) {
+        it.pom.getRuntimeDependencies().remove(lombok)
+      }
+
       pom.withXml {
         def root = asNode()
         root.appendNode('name', project.pomName)
-        root.appendNode('description', project.description)
+        root.appendNode('description', project.ext.description)
         root.appendNode('url', 'https://github.com/domix/oneltico')
         root.appendNode('inceptionYear', '2015')
         root.appendNode('packaging', 'jar')
@@ -163,11 +173,11 @@ publishing {
         domix.appendNode('email', 'domingo.suarez@gmail.com')
 
 
-        root.dependencies.'*'.findAll() {
+        root.dependencies.'*'.findAll {
           it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
             dep.name == it.artifactId.text()
           }
-        }.each() {
+        }.each {
           it.scope*.value = 'compile'
         }
       }
@@ -215,6 +225,5 @@ bintray {
 javadoc.options.links("https://docs.oracle.com/javase/8/docs/api/")
 
 classes.dependsOn licenseFormat
-build.dependsOn jacocoTestReport
 createReleaseTag.dependsOn bintrayUpload
 
