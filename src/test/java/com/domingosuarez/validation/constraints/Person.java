@@ -31,6 +31,17 @@ public class Person {
   private String name;
 
   @Constraint(property = "name", message = "El nombre no puede estar vacio.")
-  Predicate<Person> notEmptyName = (p) -> !p.getName().isEmpty();
+  public Predicate<Person> notEmptyName = (p) -> {
+    boolean result = !p.getName().isEmpty();
+    System.out.println("notEmptyName: " + result);
+    return result;
+  };
+
+  @Constraint(property = "name", message = "El nombre no puede estar vacio jfgjfg.")
+  private Predicate<Person> notEmptyName2 = (p) -> {
+    boolean result = !p.getName().isEmpty();
+    System.out.println("notEmptyName2: " + result);
+    return result;
+  };
 
 }

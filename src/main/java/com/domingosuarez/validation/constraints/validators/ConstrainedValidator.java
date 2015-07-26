@@ -17,9 +17,23 @@
 package com.domingosuarez.validation.constraints.validators;
 
 import com.domingosuarez.validation.constraints.Constrained;
+import com.domingosuarez.validation.constraints.Constraint;
+import lombok.AllArgsConstructor;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
+import static java.util.Optional.of;
+import static java.util.stream.Collectors.toList;
+import static org.springframework.core.annotation.AnnotationUtils.getAnnotation;
+import static org.springframework.util.ReflectionUtils.*;
 
 /**
  * Created by domix on 25/07/15.
@@ -28,11 +42,58 @@ public class ConstrainedValidator implements ConstraintValidator<Constrained, Ob
 
   @Override
   public void initialize(Constrained constraint) {
+
   }
 
   @Override
   public boolean isValid(Object value, ConstraintValidatorContext context) {
-    return true;
+    List<Field> fields = new ArrayList<>();
+
+    doWithFields(value.getClass(), f -> {
+      makeAccessible(f);
+      fields.add(f);
+    }, f -> isPredicate.and(hasConstraintAnnotation).test(f));
+
+    List<ContraintViolation> violations = fields.stream()
+      .map((f) -> new Foo(getAnnotation(f, Constraint.class), extractPredicate.apply(f, value), value))
+      .map((f) -> findViolation.apply(f))
+      .filter((f) -> f != null)
+      .collect(toList());
+
+    boolean hasViolations = !violations.isEmpty();
+
+    if (hasViolations) {
+      context.disableDefaultConstraintViolation();
+      violations.forEach((v) -> context.buildConstraintViolationWithTemplate(v.message)
+        .addPropertyNode(v.property).addConstraintViolation());
+    }
+
+    return !hasViolations;
+  }
+
+  Function<Foo, ContraintViolation> findViolation = (f) -> of(f.predicate.test(f.entity))
+    .map((r) -> new ContraintViolation(f.constraint.message(), f.constraint.property()))
+    .orElse(null);
+
+  BiPredicate<Foo, Object> ff = (f, o) -> f.predicate.test(o);
+
+  BiFunction<Field, Object, Predicate> extractPredicate = (f, v) -> (Predicate) getField(f, v);
+
+  Predicate<Field> isPredicate = (f) -> f.getType().isAssignableFrom(Predicate.class);
+
+  Predicate<Field> hasConstraintAnnotation = (f) -> getAnnotation(f, Constraint.class) != null;
+
+  @AllArgsConstructor
+  static class Foo {
+    Constraint constraint;
+    Predicate predicate;
+    Object entity;
+  }
+
+  @AllArgsConstructor
+  static class ContraintViolation {
+    String message;
+    String property;
   }
 
 }

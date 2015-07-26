@@ -35,6 +35,7 @@ plugins {
 ext {
   javaVersion = '1.8'
   spockVersion = '1.0-groovy-2.4'
+  springVersion = '4.1.7.RELEASE'
 
   groupId = 'com.domingosuarez'
   artifactId = 'oneltico'
@@ -69,10 +70,11 @@ ext {
 
 dependencies {
   compile 'javax.validation:validation-api:1.1.0.Final'
+  compile 'org.projectlombok:lombok:1.16.4'
+  compile "org.springframework:spring-core:${springVersion}"
 
-  testCompile 'org.projectlombok:lombok:1.16.4'
   testCompile 'org.hibernate:hibernate-validator:5.2.0.Final'
-  testCompile 'javax.el:javax.el-api:3.0.1-b04'
+  //testCompile 'javax.el:javax.el-api:3.0.1-b04'
   testCompile 'org.glassfish.web:javax.el:2.2.6'
   testCompile "org.spockframework:spock-core:${spockVersion}"
   testCompile 'org.codehaus.groovy:groovy-all:2.4.4'
@@ -213,5 +215,6 @@ bintray {
 javadoc.options.links("https://docs.oracle.com/javase/8/docs/api/")
 
 classes.dependsOn licenseFormat
+build.dependsOn jacocoTestReport
 createReleaseTag.dependsOn bintrayUpload
 

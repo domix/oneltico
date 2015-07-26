@@ -31,11 +31,10 @@ class SmokeSpec extends Specification {
       ValidatorFactory factory = Validation.buildDefaultValidatorFactory()
       Validator validator = factory.getValidator()
     when:
-      Person domix = new Person()
+      Person domix = new Person(name: '')
       def constraintViolations = validator.validate(domix)
       println constraintViolations
     then:
-      constraintViolations
-
+      constraintViolations.size()
   }
 }
