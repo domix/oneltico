@@ -54,8 +54,8 @@ repositories {
   jcenter()
 }
 
-version = project.version
-group = project.group
+version = version
+group = groupId
 
 sourceCompatibility = project.javaVersion
 targetCompatibility = project.javaVersion
