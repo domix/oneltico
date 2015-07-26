@@ -52,6 +52,7 @@ public class ConstrainedValidator implements ConstraintValidator<Constrained, Ob
       fields.add(field);
     }, field -> isPredicate.and(hasConstraintAnnotation).test(field));
 
+    @SuppressWarnings("unchecked")
     List<ContraintViolation> violations = fields.stream()
       .map(field -> constraintInformation.apply(field, value))
       .filter(constraintInformation -> !constraintInformation.predicate.test(value))
