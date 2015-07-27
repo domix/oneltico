@@ -33,8 +33,18 @@ class SmokeSpec extends Specification {
     when:
       Person domix = new Person(name: '')
       def constraintViolations = validator.validate(domix)
-      println constraintViolations
     then:
       constraintViolations.size() == 2
+    when:
+      Dog firulais = new Dog(name: 'toby')
+      constraintViolations = validator.validate(firulais)
+    then:
+      constraintViolations.size() == 0
+
+    when:
+      firulais = new Dog(name: 'firulais')
+      constraintViolations = validator.validate(firulais)
+    then:
+      constraintViolations.size() == 1
   }
 }

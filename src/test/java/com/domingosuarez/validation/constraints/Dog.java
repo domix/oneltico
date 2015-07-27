@@ -16,23 +16,21 @@
  */
 package com.domingosuarez.validation.constraints;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import lombok.Getter;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import javax.validation.constraints.NotNull;
 
 /**
- * Created by domix on 25/07/15.
+ * Created by domix on 27/07/15.
  */
-@Target({FIELD, METHOD})
-@Retention(RUNTIME)
-@Documented
-public @interface Constraint {
-  String property();
+@Constrained
+public class Dog {
+  @Getter
+  @NotNull
+  private String name;
 
-  String message() default "{oneltico.constraints.Rule.message}";
-
+  @Constraint(property = "name")
+  Boolean nameIsNotFirulais() {
+    return !"firulais".equalsIgnoreCase(name);
+  }
 }

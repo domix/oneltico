@@ -22,7 +22,9 @@ import lombok.AllArgsConstructor;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -59,10 +61,24 @@ public class ConstrainedValidator implements ConstraintValidator<Constrained, Ob
       .map(constraintInformation -> constraintViolation.apply(constraintInformation))
       .collect(toList());
 
+    List<Method> methods = new ArrayList<>();
+
+    doWithMethods(value.getClass(), method -> {
+        makeAccessible(method);
+        methods.add(method);
+      },
+      method -> hasConstraintAnnotation.test(method) && returnBoolean.and(emptyParams).test(method));
+
+    violations.addAll(methods.stream()
+      .filter(method -> !(Boolean) invokeMethod(method, value))
+      .map(method -> constraintInformation2.apply(method, value))
+      .collect(toList()));
+
     boolean isValid = violations.isEmpty();
 
     if (!isValid) {
       context.disableDefaultConstraintViolation();
+
       violations.forEach(constraintViolation ->
         context.buildConstraintViolationWithTemplate(constraintViolation.message)
           .addPropertyNode(constraintViolation.property).addConstraintViolation());
@@ -71,6 +87,10 @@ public class ConstrainedValidator implements ConstraintValidator<Constrained, Ob
     return isValid;
   }
 
+  Predicate<Method> returnBoolean = method -> method.getReturnType().isAssignableFrom(Boolean.class);
+
+  Predicate<Method> emptyParams = method -> method.getParameterCount() == 0;
+
   Function<ConstraintInformation, ContraintViolation> constraintViolation = constraintInformation ->
     new ContraintViolation(constraintInformation.constraint.message(), constraintInformation.constraint.property());
 
@@ -78,10 +98,17 @@ public class ConstrainedValidator implements ConstraintValidator<Constrained, Ob
 
   Predicate<Field> isPredicate = field -> field.getType().isAssignableFrom(Predicate.class);
 
-  Predicate<Field> hasConstraintAnnotation = field -> getAnnotation(field, Constraint.class) != null;
+  Function<AnnotatedElement, Constraint> getConstraintAnnotation = ae -> getAnnotation(ae, Constraint.class);
+
+  Predicate<AnnotatedElement> hasConstraintAnnotation = ae -> getConstraintAnnotation.apply(ae) != null;
 
   BiFunction<Field, Object, ConstraintInformation> constraintInformation = (field, value) ->
-    new ConstraintInformation(getAnnotation(field, Constraint.class), extractPredicate.apply(field, value), value);
+    new ConstraintInformation(getConstraintAnnotation.apply(field), extractPredicate.apply(field, value), value);
+
+  BiFunction<Method, Object, ContraintViolation> constraintInformation2 = (method, value) -> {
+    Constraint constraint = getConstraintAnnotation.apply(method);
+    return new ContraintViolation(constraint.message(), constraint.property());
+  };
 
   @AllArgsConstructor
   static class ConstraintInformation {
