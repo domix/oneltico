@@ -205,7 +205,7 @@ bintray {
     issueTrackerUrl = 'https://github.com/domix/oneltico/issues'
     vcsUrl = 'https://github.com/domix/oneltico.git'
     licenses = ['Apache-2.0']
-    labels = ['jpa', 'bean validation', 'jsr-303']
+    labels = ['jpa', 'bean validation', 'jsr-303', 'jsr-349']
     publicDownloadNumbers = true
     attributes = [:]
     //Optional version descriptor
