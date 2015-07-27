@@ -8,4 +8,4 @@ it came to be verified, it came to become true
 
 # intention
 
-Provide `Bean Validation` extra validators
+Provide `Bean Validation` extra validators, just for fun.
