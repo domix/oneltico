@@ -39,7 +39,6 @@ ext {
 
   groupId = 'com.domingosuarez'
   artifactId = 'oneltico'
-  version = '0.1.0'
 
   pomName = 'oneltico'
   description = 'Bean Validation extras'
@@ -59,7 +58,6 @@ repositories {
   jcenter()
 }
 
-version = version
 group = groupId
 
 sourceCompatibility = project.javaVersion
