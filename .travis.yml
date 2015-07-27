@@ -14,3 +14,6 @@ env:
 
 script:
 - ./gradlew test jacocoTestReport coveralls
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
