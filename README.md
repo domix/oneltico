@@ -13,4 +13,5 @@ Provide `Bean Validation` extra validators, just for fun. Profit later.
 
 ## Code coverage
 
-![codecov.io](http://codecov.io/github/domix/oneltico/branch.svg?branch=master)
+
+[![codecov.io](http://codecov.io/github/domix/oneltico/branch.svg?branch=master)](http://codecov.io/github/domix/oneltico?branch=master)
