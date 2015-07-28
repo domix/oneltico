@@ -31,6 +31,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.core.annotation.AnnotationUtils.getAnnotation;
 import static org.springframework.util.ReflectionUtils.*;
@@ -105,10 +106,9 @@ public class ConstrainedValidator implements ConstraintValidator<Constrained, Ob
   BiFunction<Field, Object, ConstraintInformation> constraintInformation = (field, value) ->
     new ConstraintInformation(getConstraintAnnotation.apply(field), extractPredicate.apply(field, value), value);
 
-  BiFunction<Method, Object, ContraintViolation> constraintInformation2 = (method, value) -> {
-    Constraint constraint = getConstraintAnnotation.apply(method);
-    return new ContraintViolation(constraint.message(), constraint.property());
-  };
+  BiFunction<Method, Object, ContraintViolation> constraintInformation2 = (method, value) ->
+    ofNullable(getConstraintAnnotation.apply(method))
+      .map(c -> new ContraintViolation(c.message(), c.property())).get();
 
   @AllArgsConstructor
   static class ConstraintInformation {
