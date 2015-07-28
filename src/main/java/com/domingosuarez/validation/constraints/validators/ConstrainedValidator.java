@@ -67,7 +67,7 @@ public class ConstrainedValidator implements ConstraintValidator<Constrained, Ob
         makeAccessible(method);
         methods.add(method);
       },
-      method -> hasConstraintAnnotation.test(method) && returnBoolean.and(emptyParams).test(method));
+      method -> returnBoolean.and(emptyParams).and(hasConstraintAnnotation).test(method));
 
     violations.addAll(methods.stream()
       .filter(method -> !(Boolean) invokeMethod(method, value))
