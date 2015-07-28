@@ -28,7 +28,10 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Created by domix on 23/07/15.
+ * The annotated element could have {Constraint} elements.
+ *
+ * @author Domingo Suarez Torres
+ * @since 0.1.0
  */
 @Target(TYPE)
 @Retention(RUNTIME)
