@@ -25,7 +25,10 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Created by domix on 25/07/15.
+ * Use this annotation in Predicates or method with no arguments that return Boolean.
+ *
+ * @author Domingo Suarez Torres
+ * @since 0.1.0
  */
 @Target({FIELD, METHOD})
 @Retention(RUNTIME)
