@@ -74,7 +74,7 @@ dependencies {
   compile 'org.projectlombok:lombok:1.16.4'
   compile "org.springframework:spring-core:${springVersion}"
 
-  testCompile 'org.hibernate:hibernate-validator:5.2.0.Final'
+  testCompile 'org.hibernate:hibernate-validator:5.2.1.Final'
   testCompile 'org.glassfish.web:javax.el:2.2.6'
   testCompile "org.spockframework:spock-core:${spockVersion}"
   testCompile 'org.codehaus.groovy:groovy-all:2.4.4'
