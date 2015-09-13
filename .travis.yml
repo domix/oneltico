@@ -1,8 +1,8 @@
 sudo: false
 
 cache:
-  directories:
-  - $HOME/.gradle
+directories:
+- $HOME/.gradle
 
 language: groovy
 
@@ -15,10 +15,10 @@ env:
 install: true
 
 before_script:
-  - ./gradlew --version
+- ./gradlew --version
 
 script:
 - ./gradlew test jacocoTestReport coveralls
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+- bash <(curl -s https://codecov.io/bash)

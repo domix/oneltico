@@ -15,7 +15,7 @@
  */
 
 
-buildscript {
+ buildscript {
   repositories {
     jcenter()
   }
@@ -81,10 +81,10 @@ dependencies {
 }
 
 def jarManifestAttributes = [
-  'Built-By'  : System.properties['user.name'],
-  'Created-By': System.properties['java.version'] + ' (' + System.properties['java.vendor'] + ' ' + System.getProperty("java.vm.version") + ")",
-  'Build-Date': buildDate,
-  'Build-Time': buildTime]
+'Built-By'  : System.properties['user.name'],
+'Created-By': System.properties['java.version'] + ' (' + System.properties['java.vendor'] + ' ' + System.getProperty("java.vm.version") + ")",
+'Build-Date': buildDate,
+'Build-Time': buildTime]
 
 jar {
   manifest {
@@ -175,11 +175,8 @@ publishing {
         domix.appendNode('email', 'domingo.suarez@gmail.com')
 
 
-        root.dependencies.'*'.findAll {
-          it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { dep ->
-            dep.name == it.artifactId.text()
-          }
-        }.each {
+        root.dependencies.'*'.findAll { it.scope.text() == 'runtime' && project.configurations.compile.allDependencies.find { 
+          dep -> dep.name == it.artifactId.text() } }.each {
           it.scope*.value = 'compile'
         }
       }
@@ -192,40 +189,42 @@ bintray {
   key = project.hasProperty('bintrayApiKey') ? bintrayApiKey : ''
 
   publications = ['mavenJava']
+
   dryRun = false //Whether to run this as dry-run, without deploying
-  publish = true //If version should be auto published after an upload
-  pkg {
-    repo = 'oss'
-    userOrg = 'domix'
-    name = project.name
-    desc = project.description
-    websiteUrl = 'https://github.com/domix/oneltico'
-    issueTrackerUrl = 'https://github.com/domix/oneltico/issues'
-    vcsUrl = 'https://github.com/domix/oneltico.git'
-    licenses = ['Apache-2.0']
-    labels = ['jpa', 'bean validation', 'jsr-303', 'jsr-349']
-    publicDownloadNumbers = true
-    attributes = [:]
-    //Optional version descriptor
-    version {
-      name = project.version
+    publish = true //If version should be auto published after an upload
+    pkg {
+      repo = 'oss'
+      userOrg = 'domix'
+      name = project.name
       desc = project.description
-      gpg {
-        sign = project.hasProperty('bintrayGpgPassphrase')
-        passphrase = project.hasProperty('bintrayGpgPassphrase') ? bintrayGpgPassphrase : ''
-      }
-      mavenCentralSync {
-        sync = false
-        user = ''
-        password = ''
-        close = '1'
+      websiteUrl = 'https://github.com/domix/oneltico'
+      issueTrackerUrl = 'https://github.com/domix/oneltico/issues'
+      vcsUrl = 'https://github.com/domix/oneltico.git'
+      licenses = ['Apache-2.0']
+      labels = ['jpa', 'bean validation', 'jsr-303', 'jsr-349']
+      publicDownloadNumbers = true
+      attributes = [:]
+
+      //Optional version descriptor
+      version {
+        name = project.version
+        desc = project.description
+        gpg {
+          sign = project.hasProperty('bintrayGpgPassphrase')
+          passphrase = project.hasProperty('bintrayGpgPassphrase') ? bintrayGpgPassphrase : ''
+        }
+        mavenCentralSync {
+          sync = false
+          user = ''
+          password = ''
+          close = '1'
+        }
       }
     }
   }
-}
 
-javadoc.options.links("https://docs.oracle.com/javase/8/docs/api/")
+  javadoc.options.links("https://docs.oracle.com/javase/8/docs/api/")
 
-classes.dependsOn licenseFormat
-createReleaseTag.dependsOn bintrayUpload
+  classes.dependsOn licenseFormat
+  createReleaseTag.dependsOn bintrayUpload
 
