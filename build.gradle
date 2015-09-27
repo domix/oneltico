@@ -77,7 +77,7 @@ dependencies {
   testCompile 'org.hibernate:hibernate-validator:5.2.1.Final'
   testCompile 'org.glassfish.web:javax.el:2.2.6'
   testCompile "org.spockframework:spock-core:${spockVersion}"
-  testCompile 'org.codehaus.groovy:groovy-all:2.4.4'
+  testCompile 'org.codehaus.groovy:groovy-all:2.4.5'
 }
 
 def jarManifestAttributes = [
