@@ -29,7 +29,7 @@
 
 plugins {
   id "com.github.hierynomus.license" version "0.11.0"
-  id 'net.researchgate.release' version '2.2.2'
+  id 'net.researchgate.release' version '2.3.0'
 }
 
 ext {
@@ -74,7 +74,7 @@ dependencies {
   compile 'org.projectlombok:lombok:1.16.6'
   compile "org.springframework:spring-core:${springVersion}"
 
-  testCompile 'org.hibernate:hibernate-validator:5.2.1.Final'
+  testCompile 'org.hibernate:hibernate-validator:5.2.2.Final'
   testCompile 'org.glassfish.web:javax.el:2.2.6'
   testCompile "org.spockframework:spock-core:${spockVersion}"
   testCompile 'org.codehaus.groovy:groovy-all:2.4.5'
