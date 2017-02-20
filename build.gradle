@@ -34,7 +34,7 @@ plugins {
 
 ext {
   javaVersion = '1.8'
-  spockVersion = '1.0-groovy-2.4'
+  spockVersion = '1.1-groovy-2.4-rc-3'
   springVersion = '4.3.6.RELEASE'
 
   groupId = 'com.domingosuarez'
