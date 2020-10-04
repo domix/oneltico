@@ -85,7 +85,7 @@ dependencies {
   testAnnotationProcessor("org.projectlombok:lombok:${ lombokVersion }")
   testCompileOnly("org.projectlombok:lombok:${ lombokVersion }")
   testImplementation 'javax.el:javax.el-api:3.0.1-b06'
-  testImplementation 'org.hibernate:hibernate-validator:6.0.13.Final'
+  testImplementation 'org.hibernate:hibernate-validator:6.1.6.Final'
   testImplementation 'org.glassfish.web:javax.el:2.2.6'
   testImplementation "org.spockframework:spock-core:${ spockVersion }"
   testImplementation 'org.codehaus.groovy:groovy:3.0.6'
