@@ -88,7 +88,7 @@ dependencies {
   testImplementation 'org.hibernate:hibernate-validator:6.1.6.Final'
   testImplementation 'org.glassfish.web:javax.el:2.2.6'
   testImplementation "org.spockframework:spock-core:${ spockVersion }"
-  testImplementation 'org.codehaus.groovy:groovy:3.0.6'
+  testImplementation 'org.codehaus.groovy:groovy:3.0.7'
 }
 
 def jarManifestAttributes = [
