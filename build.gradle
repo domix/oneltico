@@ -23,7 +23,7 @@ buildscript {
   dependencies {
     classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5'
     classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.8.3'
-    classpath 'com.github.ben-manes:gradle-versions-plugin:0.38.0'
+    classpath 'com.github.ben-manes:gradle-versions-plugin:0.39.0'
   }
 }
 
