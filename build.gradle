@@ -59,7 +59,7 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.ben-manes.versions'
 
 repositories {
-  jcenter()
+  mavenCentral()
 }
 
 group = groupId
